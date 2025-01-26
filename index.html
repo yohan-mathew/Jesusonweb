@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VII</title>
   <style>
@@ -45,6 +45,7 @@
       width: 100%;
       height: 100%;
       transition: transform 0.4s ease;
+      touch-action: pan-y; /* helps with vertical scroll on phone */
     }
 
     /* Each month-group is a slide taking full width, styled like a card */
@@ -126,6 +127,7 @@
       user-select: none;
       z-index: 10;
     }
+
     .arrow:hover {
       background: rgba(0, 0, 0, 0.7);
     }
@@ -136,6 +138,13 @@
 
     .arrow-right {
       right: 10px;
+    }
+
+    /* Hide arrows on smaller screens (phone) */
+    @media (max-width: 768px) {
+      .arrow {
+        display: none;
+      }
     }
 
     /* Dots (slide indicators) */
@@ -195,7 +204,7 @@
     }
 
     function populateSlides() {
-      const slidesContainer = document.getElementById("slides");
+      const slidesContainer = document.getElementById('slides');
       // We only want Sundays up to May (i.e., month index <= 4)
       const sundays = getAllRemainingSundays(new Date().getFullYear()).filter(
         (date) => date.getMonth() <= 4
@@ -203,24 +212,24 @@
 
       // We'll map each Sunday to the correct info from your array
       const info = [
-        "Lesson 12: The Epistle to Romans",
-        "Lesson 13: Epistles to Corinthians",
-        "Lesson 14: Epistles to Galatians",
-        "Lesson 15: Epistles to Ephesians",
-        "Lesson 16: Epistle to Philippians",
-        "Lesson 17: Epistle to Colossians",
-        "Lesson 18: Epistle to the Thessalonians",
-        "Lesson 19: Epistle to Timothy",
-        "Lesson 20: Epistle to Titus",
-        "Lesson 21: Epistle to Philemon",
-        "Lesson 22: Epistle to Hebrews",
-        "Lesson 23: Matthew Mor Athanasius",
-        "Lesson 24: Bishop Yuakkeem Mor Koorilose",
-        "Lesson 25: Mor Dionysius the Fifth",
-        "Lesson 26: Patriarch H.H Moran Mar Ignatius Peter - Third",
-        "Lesson 27: The Mulanthurity Synod (1876)",
-        "Lesson 28: Review",
-        "Lesson 29: Exam",
+        'Lesson 12: The Epistle to Romans',
+        'Lesson 13: Epistles to Corinthians',
+        'Lesson 14: Epistles to Galatians',
+        'Lesson 15: Epistles to Ephesians',
+        'Lesson 16: Epistle to Philippians',
+        'Lesson 17: Epistle to Colossians',
+        'Lesson 18: Epistle to the Thessalonians',
+        'Lesson 19: Epistle to Timothy',
+        'Lesson 20: Epistle to Titus',
+        'Lesson 21: Epistle to Philemon',
+        'Lesson 22: Epistle to Hebrews',
+        'Lesson 23: Matthew Mor Athanasius',
+        'Lesson 24: Bishop Yuakkeem Mor Koorilose',
+        'Lesson 25: Mor Dionysius the Fifth',
+        'Lesson 26: Patriarch H.H Moran Mar Ignatius Peter - Third',
+        'Lesson 27: The Mulanthurity Synod (1876)',
+        'Lesson 28: Review',
+        'Lesson 29: Exam',
       ];
 
       // Group them by month
@@ -229,39 +238,39 @@
 
       for (let i = 0; i < sundays.length; i++) {
         const sunday = sundays[i];
-        const month = sunday.toLocaleString("default", { month: "long" });
+        const month = sunday.toLocaleString('default', { month: 'long' });
         if (!groupedByMonth[month]) {
           groupedByMonth[month] = [];
         }
         // If we run out of info array, break or reuse last?
         // We'll just do a quick safety check.
-        const thisInfo = infoIndex < info.length ? info[infoIndex] : "No more lessons";
+        const thisInfo = infoIndex < info.length ? info[infoIndex] : 'No more lessons';
         groupedByMonth[month].push({ date: sunday, info: thisInfo });
         infoIndex++;
       }
 
       // Now create a slide for each month
       Object.keys(groupedByMonth).forEach((month) => {
-        const monthGroup = document.createElement("div");
-        monthGroup.className = "month-group";
+        const monthGroup = document.createElement('div');
+        monthGroup.className = 'month-group';
 
-        const monthLabel = document.createElement("div");
-        monthLabel.className = "month-label";
+        const monthLabel = document.createElement('div');
+        monthLabel.className = 'month-label';
         monthLabel.textContent = month;
         monthGroup.appendChild(monthLabel);
 
         groupedByMonth[month].forEach(({ date, info }) => {
           const day = date.getDate();
           // Create a row with a circle for the date, and a rectangle for the info
-          const dateRow = document.createElement("div");
-          dateRow.className = "date-row";
+          const dateRow = document.createElement('div');
+          dateRow.className = 'date-row';
 
-          const dateCircle = document.createElement("div");
-          dateCircle.className = "date-circle";
+          const dateCircle = document.createElement('div');
+          dateCircle.className = 'date-circle';
           dateCircle.textContent = day;
 
-          const infoBlock = document.createElement("div");
-          infoBlock.className = "info-block";
+          const infoBlock = document.createElement('div');
+          infoBlock.className = 'info-block';
           infoBlock.textContent = info;
 
           dateRow.appendChild(dateCircle);
@@ -274,11 +283,11 @@
     }
 
     function initSlider() {
-      const slidesEl = document.getElementById("slides");
-      const slideItems = document.querySelectorAll(".month-group");
-      const arrowLeft = document.getElementById("arrowLeft");
-      const arrowRight = document.getElementById("arrowRight");
-      const dotContainer = document.getElementById("dotContainer");
+      const slidesEl = document.getElementById('slides');
+      const slideItems = document.querySelectorAll('.month-group');
+      const arrowLeft = document.getElementById('arrowLeft');
+      const arrowRight = document.getElementById('arrowRight');
+      const dotContainer = document.getElementById('dotContainer');
 
       let currentSlide = 0;
       const totalSlides = slideItems.length;
@@ -286,13 +295,13 @@
       // Create dots
       const dots = [];
       for (let i = 0; i < totalSlides; i++) {
-        const dot = document.createElement("div");
-        dot.className = "dot";
+        const dot = document.createElement('div');
+        dot.className = 'dot';
         dotContainer.appendChild(dot);
         dots.push(dot);
 
         // Click on a dot to go to that slide
-        dot.addEventListener("click", () => {
+        dot.addEventListener('click', () => {
           currentSlide = i;
           updateSlide();
         });
@@ -305,21 +314,55 @@
 
       function updateDots() {
         dots.forEach((dot, index) => {
-          dot.classList.toggle("active", index === currentSlide);
+          dot.classList.toggle('active', index === currentSlide);
         });
       }
 
       // Initialize first dot as active
       updateDots();
 
-      arrowLeft.addEventListener("click", () => {
+      arrowLeft.addEventListener('click', () => {
         currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
         updateSlide();
       });
 
-      arrowRight.addEventListener("click", () => {
+      arrowRight.addEventListener('click', () => {
         currentSlide = (currentSlide + 1) % totalSlides;
         updateSlide();
+      });
+
+      // Add touch events for swiping on mobile
+      let startX = 0;
+      let isDragging = false;
+
+      slidesEl.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        isDragging = true;
+      });
+
+      slidesEl.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        // Could implement real-time shift, but let's keep it simple
+      });
+
+      slidesEl.addEventListener('touchend', (e) => {
+        if (!isDragging) return;
+        const endX = e.changedTouches[0].clientX;
+        const diff = endX - startX;
+
+        // threshold for swipe
+        const threshold = 50;
+        if (Math.abs(diff) > threshold) {
+          if (diff < 0) {
+            // swipe left
+            currentSlide = (currentSlide + 1) % totalSlides;
+          } else {
+            // swipe right
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+          }
+          updateSlide();
+        }
+        isDragging = false;
       });
     }
 
