@@ -6,6 +6,7 @@
   <title>VII</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+
     body {
       margin: 0;
       padding: 0;
@@ -74,34 +75,37 @@
       color: #fff;
     }
 
-    /* Circles that turn into rectangles on hover */
-    .circle {
-      width: 50px;
-      height: 50px;
-      background-color: #555;
-      color: white;
+    /* Container for each date and its info side by side */
+    .date-row {
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      position: relative;
-      cursor: pointer;
+      gap: 10px;
       margin-bottom: 10px;
     }
-    .circle:hover {
-      width: 200px;
+
+    /* Circle for date */
+    .date-circle {
+      background-color: #555;
+      width: 50px;
       height: 50px;
-      border-radius: 10px;
-      justify-content: flex-start;
-      padding-left: 10px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #fff;
     }
-    .circle:hover::after {
-      content: attr(data-info);
-      position: static;
-      display: inline-block;
-      margin-left: 10px;
-      font-size: 0.9rem;
+
+    /* Static rectangle for the lesson info */
+    .info-block {
+      background-color: #555;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-size: 1rem;
+      text-align: center;
+      width: 220px; /* Adjust as needed */
     }
 
     /* Arrow controls on the sides */
@@ -193,7 +197,9 @@
     function populateSlides() {
       const slidesContainer = document.getElementById("slides");
       // We only want Sundays up to May (i.e., month index <= 4)
-      const sundays = getAllRemainingSundays(new Date().getFullYear()).filter(date => date.getMonth() <= 4);
+      const sundays = getAllRemainingSundays(new Date().getFullYear()).filter(
+        (date) => date.getMonth() <= 4
+      );
 
       // We'll map each Sunday to the correct info from your array
       const info = [
@@ -214,7 +220,7 @@
         "Lesson 26: Patriarch H.H Moran Mar Ignatius Peter - Third",
         "Lesson 27: The Mulanthurity Synod (1876)",
         "Lesson 28: Review",
-        "Lesson 29: Exam"
+        "Lesson 29: Exam",
       ];
 
       // Group them by month
@@ -235,7 +241,7 @@
       }
 
       // Now create a slide for each month
-      Object.keys(groupedByMonth).forEach(month => {
+      Object.keys(groupedByMonth).forEach((month) => {
         const monthGroup = document.createElement("div");
         monthGroup.className = "month-group";
 
@@ -246,11 +252,21 @@
 
         groupedByMonth[month].forEach(({ date, info }) => {
           const day = date.getDate();
-          const circle = document.createElement("div");
-          circle.className = "circle";
-          circle.textContent = day;
-          circle.setAttribute("data-info", info);
-          monthGroup.appendChild(circle);
+          // Create a row with a circle for the date, and a rectangle for the info
+          const dateRow = document.createElement("div");
+          dateRow.className = "date-row";
+
+          const dateCircle = document.createElement("div");
+          dateCircle.className = "date-circle";
+          dateCircle.textContent = day;
+
+          const infoBlock = document.createElement("div");
+          infoBlock.className = "info-block";
+          infoBlock.textContent = info;
+
+          dateRow.appendChild(dateCircle);
+          dateRow.appendChild(infoBlock);
+          monthGroup.appendChild(dateRow);
         });
 
         slidesContainer.appendChild(monthGroup);
@@ -258,11 +274,11 @@
     }
 
     function initSlider() {
-      const slidesEl = document.getElementById('slides');
-      const slideItems = document.querySelectorAll('.month-group');
-      const arrowLeft = document.getElementById('arrowLeft');
-      const arrowRight = document.getElementById('arrowRight');
-      const dotContainer = document.getElementById('dotContainer');
+      const slidesEl = document.getElementById("slides");
+      const slideItems = document.querySelectorAll(".month-group");
+      const arrowLeft = document.getElementById("arrowLeft");
+      const arrowRight = document.getElementById("arrowRight");
+      const dotContainer = document.getElementById("dotContainer");
 
       let currentSlide = 0;
       const totalSlides = slideItems.length;
@@ -270,13 +286,13 @@
       // Create dots
       const dots = [];
       for (let i = 0; i < totalSlides; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'dot';
+        const dot = document.createElement("div");
+        dot.className = "dot";
         dotContainer.appendChild(dot);
         dots.push(dot);
 
         // Click on a dot to go to that slide
-        dot.addEventListener('click', () => {
+        dot.addEventListener("click", () => {
           currentSlide = i;
           updateSlide();
         });
@@ -289,19 +305,19 @@
 
       function updateDots() {
         dots.forEach((dot, index) => {
-          dot.classList.toggle('active', index === currentSlide);
+          dot.classList.toggle("active", index === currentSlide);
         });
       }
 
       // Initialize first dot as active
       updateDots();
 
-      arrowLeft.addEventListener('click', () => {
+      arrowLeft.addEventListener("click", () => {
         currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
         updateSlide();
       });
 
-      arrowRight.addEventListener('click', () => {
+      arrowRight.addEventListener("click", () => {
         currentSlide = (currentSlide + 1) % totalSlides;
         updateSlide();
       });
