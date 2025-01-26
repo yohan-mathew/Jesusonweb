@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VII</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 4rem;
+      margin: 20px 0;
+    }
+
+    /* Slider container for all month-groups */
+    .slider-container {
+      position: relative;
+      width: 90%;
+      max-width: 800px;
+      height: 65vh;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      background: #111;
+    }
+
+    /* The slides container that moves left-right */
+    .slides {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.4s ease;
+    }
+
+    /* Each month-group is a slide taking full width, styled like a card */
+    .month-group {
+      flex: 0 0 100%;
+      box-sizing: border-box;
+      padding: 20px;
+      margin: 0;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      background: #222;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+      /* Center the content vertically and horizontally */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Centered month label, same font as heading */
+    .month-label {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    /* Circles that turn into rectangles on hover */
+    .circle {
+      width: 50px;
+      height: 50px;
+      background-color: #555;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      position: relative;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .circle:hover {
+      width: 200px;
+      height: 50px;
+      border-radius: 10px;
+      justify-content: flex-start;
+      padding-left: 10px;
+    }
+    .circle:hover::after {
+      content: attr(data-info);
+      position: static;
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 0.9rem;
+    }
+
+    /* Arrow controls on the sides */
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2rem;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.5);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      z-index: 10;
+    }
+    .arrow:hover {
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .arrow-left {
+      left: 10px;
+    }
+
+    .arrow-right {
+      right: 10px;
+    }
+
+    /* Dots (slide indicators) */
+    .dot-container {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #555;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .dot.active {
+      background-color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h1>VII</h1>
+
+  <div class="slider-container">
+    <div class="arrow arrow-left" id="arrowLeft">&#10094;</div>
+    <div class="arrow arrow-right" id="arrowRight">&#10095;</div>
+
+    <div class="slides" id="slides">
+      <!-- Month groups as slides will be dynamically added here -->
+    </div>
+  </div>
+
+  <div class="dot-container" id="dotContainer"></div>
+
+  <script>
+    // Returns all Sundays from today up to end of the current year
+    function getAllRemainingSundays(year) {
+      const sundays = [];
+      const today = new Date();
+      const date = new Date(year, today.getMonth(), today.getDate());
+
+      // Move to the first Sunday from today
+      while (date.getDay() !== 0) {
+        date.setDate(date.getDate() + 1);
+      }
+
+      // Collect all remaining Sundays of the year
+      while (date.getFullYear() === year) {
+        sundays.push(new Date(date));
+        date.setDate(date.getDate() + 7);
+      }
+
+      return sundays;
+    }
+
+    function populateSlides() {
+      const slidesContainer = document.getElementById("slides");
+      // We only want Sundays up to May (i.e., month index <= 4)
+      const sundays = getAllRemainingSundays(new Date().getFullYear()).filter(date => date.getMonth() <= 4);
+
+      // We'll map each Sunday to the correct info from your array
+      const info = [
+        "Lesson 12: The Epistle to Romans",
+        "Lesson 13: Epistles to Corinthians",
+        "Lesson 14: Epistles to Galatians",
+        "Lesson 15: Epistles to Ephesians",
+        "Lesson 16: Epistle to Philippians",
+        "Lesson 17: Epistle to Colossians",
+        "Lesson 18: Epistle to the Thessalonians",
+        "Lesson 19: Epistle to Timothy",
+        "Lesson 20: Epistle to Titus",
+        "Lesson 21: Epistle to Philemon",
+        "Lesson 22: Epistle to Hebrews",
+        "Lesson 23: Matthew Mor Athanasius",
+        "Lesson 24: Bishop Yuakkeem Mor Koorilose",
+        "Lesson 25: Mor Dionysius the Fifth",
+        "Lesson 26: Patriarch H.H Moran Mar Ignatius Peter - Third",
+        "Lesson 27: The Mulanthurity Synod (1876)",
+        "Lesson 28: Review",
+        "Lesson 29: Exam"
+      ];
+
+      // Group them by month
+      const groupedByMonth = {};
+      let infoIndex = 0;
+
+      for (let i = 0; i < sundays.length; i++) {
+        const sunday = sundays[i];
+        const month = sunday.toLocaleString("default", { month: "long" });
+        if (!groupedByMonth[month]) {
+          groupedByMonth[month] = [];
+        }
+        // If we run out of info array, break or reuse last?
+        // We'll just do a quick safety check.
+        const thisInfo = infoIndex < info.length ? info[infoIndex] : "No more lessons";
+        groupedByMonth[month].push({ date: sunday, info: thisInfo });
+        infoIndex++;
+      }
+
+      // Now create a slide for each month
+      Object.keys(groupedByMonth).forEach(month => {
+        const monthGroup = document.createElement("div");
+        monthGroup.className = "month-group";
+
+        const monthLabel = document.createElement("div");
+        monthLabel.className = "month-label";
+        monthLabel.textContent = month;
+        monthGroup.appendChild(monthLabel);
+
+        groupedByMonth[month].forEach(({ date, info }) => {
+          const day = date.getDate();
+          const circle = document.createElement("div");
+          circle.className = "circle";
+          circle.textContent = day;
+          circle.setAttribute("data-info", info);
+          monthGroup.appendChild(circle);
+        });
+
+        slidesContainer.appendChild(monthGroup);
+      });
+    }
+
+    function initSlider() {
+      const slidesEl = document.getElementById('slides');
+      const slideItems = document.querySelectorAll('.month-group');
+      const arrowLeft = document.getElementById('arrowLeft');
+      const arrowRight = document.getElementById('arrowRight');
+      const dotContainer = document.getElementById('dotContainer');
+
+      let currentSlide = 0;
+      const totalSlides = slideItems.length;
+
+      // Create dots
+      const dots = [];
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dotContainer.appendChild(dot);
+        dots.push(dot);
+
+        // Click on a dot to go to that slide
+        dot.addEventListener('click', () => {
+          currentSlide = i;
+          updateSlide();
+        });
+      }
+
+      function updateSlide() {
+        slidesEl.style.transform = `translateX(-${currentSlide * 100}%)`;
+        updateDots();
+      }
+
+      function updateDots() {
+        dots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === currentSlide);
+        });
+      }
+
+      // Initialize first dot as active
+      updateDots();
+
+      arrowLeft.addEventListener('click', () => {
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        updateSlide();
+      });
+
+      arrowRight.addEventListener('click', () => {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        updateSlide();
+      });
+    }
+
+    // Run everything
+    populateSlides();
+    initSlider();
+  </script>
+</body>
+</html>
